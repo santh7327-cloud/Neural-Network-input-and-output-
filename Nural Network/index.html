@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0c1020">
+    <title>Neural Lab — Interactive Network Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#" aria-label="Neural Lab home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M8 9.5 16 6l8 3.5v13L16 26l-8-3.5v-13Z" stroke="currentColor" stroke-width="1.7"/>
+              <path d="m8.5 10 7.5 3.5 7.5-3.5M16 14v11m-7.5-15L16 14l7.5-4" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="16" cy="14" r="2" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="brand-name">neural<span>lab</span></span>
+        </a>
+
+        <div class="side-label">WORKSPACE</div>
+        <nav class="side-nav">
+          <a class="nav-link active" href="#overview" aria-current="page">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg>
+            Overview
+          </a>
+          <a class="nav-link" href="#network">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 10.9 7.6-3.8M8.2 13.1l7.6 3.8"/></svg>
+            Network
+          </a>
+          <a class="nav-link" href="#performance">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h17"/><path d="m7 15 4-4 3 2 6-7"/></svg>
+            Performance
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="tip-card">
+            <span class="tip-icon" aria-hidden="true">✦</span>
+            <p>Watch the connections change as your network learns.</p>
+            <span class="tip-caption">A tiny model. A big idea.</span>
+          </div>
+          <div class="profile">
+            <div class="avatar" aria-hidden="true">N</div>
+            <div class="profile-copy"><strong>Neural explorer</strong><span>Local workspace</span></div>
+            <span class="online-dot" aria-label="Online"></span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content" id="overview">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>Workspace</span><span class="crumb-slash">/</span><strong>Overview</strong></div>
+          <div class="topbar-actions">
+            <span class="local-badge"><span></span> Runs locally</span>
+            <button class="icon-button" id="help-button" type="button" aria-label="About this demo" title="About this demo">?</button>
+          </div>
+        </header>
+
+        <section class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> INTERACTIVE PLAYGROUND</div>
+            <h1>See a neural network <span>learn.</span></h1>
+            <p class="page-subtitle">A little network, learning the XOR pattern one example at a time.</p>
+          </div>
+          <div class="page-actions">
+            <div class="model-tag"><span class="status-pulse"></span><span id="model-status">Ready to train</span></div>
+            <button class="reset-button" id="reset-button" type="button">Reset</button>
+            <button class="primary-button start-training" id="start-button" type="button" aria-label="Start training the neural network">
+              <span class="button-icon" aria-hidden="true">▶</span><span>Start training</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="metrics-grid" aria-label="Training metrics">
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">TRAINING STEP</span><span class="metric-icon purple">↗</span></div>
+            <div class="metric-value" id="step-value">0 <span>/ 6,000</span></div>
+            <div class="metric-foot"><span class="metric-dot purple-dot"></span><span id="step-caption">Waiting to start</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">CURRENT LOSS</span><span class="metric-icon blue">⌁</span></div>
+            <div class="metric-value" id="loss-value">0.2512</div>
+            <div class="metric-foot"><span class="metric-dot blue-dot"></span><span>Mean squared error</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">ACCURACY</span><span class="metric-icon green">✓</span></div>
+            <div class="metric-value" id="accuracy-value">50<span>%</span></div>
+            <div class="metric-foot"><span class="metric-dot green-dot"></span><span id="accuracy-caption">0 of 4 examples correct</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">NETWORK SHAPE</span><span class="metric-icon amber">◎</span></div>
+            <div class="metric-value shape-value">2 <span class="shape-arrow">→</span> 4 <span class="shape-arrow">→</span> 1</div>
+            <div class="metric-foot"><span class="metric-dot amber-dot"></span><span>Input · hidden · output</span></div>
+          </article>
+        </section>
+
+        <section class="visual-grid" id="network" aria-label="Network and decision boundary">
+          <article class="panel network-panel">
+            <div class="panel-heading">
+              <div>
+                <div class="panel-title-row"><h2>Network architecture</h2><span class="live-label"><span></span> LIVE</span></div>
+                <p class="panel-subtitle">Watch each neuron respond to the input</p>
+              </div>
+              <button class="subtle-button" id="step-button" type="button" title="Advance one training step">Step <span aria-hidden="true">→</span></button>
+            </div>
+            <div class="network-legend" aria-label="Connection legend">
+              <span><i class="legend-line positive"></i> Positive weight</span>
+              <span><i class="legend-line negative"></i> Negative weight</span>
+              <span class="legend-note">Line thickness = weight strength</span>
+            </div>
+            <div class="network-stage">
+              <canvas id="network-canvas" aria-label="Animated diagram of the neural network"></canvas>
+            </div>
+            <div class="layer-labels" aria-hidden="true"><span>INPUT LAYER</span><span>HIDDEN LAYER</span><span>OUTPUT</span></div>
+          </article>
+
+          <article class="panel boundary-panel">
+            <div class="panel-heading">
+              <div>
+                <div class="panel-title-row"><h2>Decision boundary</h2><span class="mini-badge">3D VIEW</span></div>
+                <p class="panel-subtitle">Drag to rotate the learned output surface</p>
+              </div>
+              <span class="chart-menu" aria-hidden="true">···</span>
+            </div>
+            <div class="heatmap-wrap">
+              <canvas id="heatmap-canvas" aria-label="Interactive three dimensional neural network output surface. Drag to rotate."></canvas>
+            </div>
+            <div class="heatmap-legend"><span>OUTPUT 0</span><div class="gradient-bar"></div><span>OUTPUT 1</span></div>
+            <div class="example-legend"><span class="example-dot target-zero"></span> Class 0 <span class="example-dot target-one"></span> Class 1 <span class="example-caption">Circles = examples</span></div>
+          </article>
+        </section>
+
+        <section class="bottom-grid" id="performance">
+          <article class="panel loss-panel">
+            <div class="panel-heading">
+              <div><h2>Learning curve</h2><p class="panel-subtitle">Error gets smaller as the network improves</p></div>
+              <span class="chart-value"><span id="chart-loss">0.2512</span><small> MSE</small></span>
+            </div>
+            <div class="loss-chart-wrap"><canvas id="loss-canvas" aria-label="Chart showing training loss decreasing over time"></canvas></div>
+            <div class="chart-axis"><span>START</span><span>TRAINING PROGRESS</span><span>6,000 STEPS</span></div>
+          </article>
+
+          <article class="panel examples-panel">
+            <div class="panel-heading">
+              <div><h2>Training examples</h2><p class="panel-subtitle">The network is learning XOR</p></div>
+              <span class="mini-badge">4 SAMPLES</span>
+            </div>
+            <div class="example-table" role="table" aria-label="XOR training examples">
+              <div class="example-row table-header" role="row"><span role="columnheader">INPUT</span><span role="columnheader">TARGET</span><span role="columnheader">PREDICTION</span><span role="columnheader">RESULT</span></div>
+              <div class="example-row" role="row" data-sample="0"><span class="input-pair">0, 0</span><span class="target-cell"><i class="class-dot zero"></i>0</span><span class="prediction-cell">0.50</span><span class="result-cell"><i class="result-dot"></i><span>—</span></span></div>
+              <div class="example-row" role="row" data-sample="1"><span class="input-pair">0, 1</span><span class="target-cell"><i class="class-dot one"></i>1</span><span class="prediction-cell">0.50</span><span class="result-cell"><i class="result-dot"></i><span>—</span></span></div>
+              <div class="example-row" role="row" data-sample="2"><span class="input-pair">1, 0</span><span class="target-cell"><i class="class-dot one"></i>1</span><span class="prediction-cell">0.50</span><span class="result-cell"><i class="result-dot"></i><span>—</span></span></div>
+              <div class="example-row" role="row" data-sample="3"><span class="input-pair">1, 1</span><span class="target-cell"><i class="class-dot zero"></i>0</span><span class="prediction-cell">0.50</span><span class="result-cell"><i class="result-dot"></i><span>—</span></span></div>
+            </div>
+          </article>
+        </section>
+
+        <footer class="page-footer"><span>NEURAL LAB <i>·</i> BUILT FOR CURIOUS MINDS</span><span>2 → 4 → 1 <i>·</i> BACKPROPAGATION</span></footer>
+      </main>
+    </div>
+
+    <dialog class="help-dialog" id="help-dialog">
+      <form method="dialog">
+        <button class="dialog-close" aria-label="Close">×</button>
+        <div class="eyebrow"><span class="eyebrow-line"></span> HOW IT WORKS</div>
+        <h2>A network learns by adjusting its connections.</h2>
+        <p>This demo trains a small neural network on XOR: the output is 1 when the two inputs differ, and 0 when they match.</p>
+        <ul>
+          <li><strong>Green connections</strong> carry positive weights; coral connections carry negative weights.</li>
+          <li><strong>The heatmap</strong> shows the network’s prediction for every input pair.</li>
+          <li><strong>The learning curve</strong> tracks prediction error as training progresses.</li>
+        </ul>
+        <button class="primary-button dialog-done">Got it</button>
+      </form>
+    </dialog>
+  </body>
+</html>
